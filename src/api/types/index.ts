@@ -1,6 +1,4 @@
 export * from "./GetChargesChargeRefundsResponse";
-export * from "./PostCustomersCustomerSourcesIdResponse";
-export * from "./GetTaxIdsResponse";
 export * from "./Account";
 export * from "./AccountApplicationAuthorized";
 export * from "./AccountApplicationDeauthorized";

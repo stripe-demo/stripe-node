@@ -1,14 +1,14 @@
 # Stripe TypeScript Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fstripe-demo%2Fstripe-node)
-[![npm shield](https://img.shields.io/npm/v/stripe)](https://www.npmjs.com/package/stripe)
+[![npm shield](https://img.shields.io/npm/v/@fern-api/stripe)](https://www.npmjs.com/package/@fern-api/stripe)
 
 The Stripe TypeScript library provides convenient access to the Stripe API from TypeScript.
 
 ## Installation
 
 ```sh
-npm i -s stripe
+npm i -s @fern-api/stripe
 ```
 
 ## Reference
@@ -20,10 +20,10 @@ A full reference for this library is available [here](./reference.md).
 Instantiate and use the client with the following:
 
 ```typescript
-import { StripeClient } from "stripe";
+import { StripeClient } from "@fern-api/stripe";
 
-const client = new StripeClient({ username: "YOUR_USERNAME", password: "YOUR_PASSWORD" });
-await client.postCustomersCustomerSourcesId("customer", "id");
+const client = new StripeClient({ token: "YOUR_TOKEN" });
+await client.account.create();
 ```
 
 ## Request And Response Types
@@ -32,7 +32,7 @@ The SDK exports all request and response types as TypeScript interfaces. Simply 
 following namespace:
 
 ```typescript
-import { Stripe } from "stripe";
+import { Stripe } from "@fern-api/stripe";
 
 const request: Stripe.AccountRetrieveRequest = {
     ...
@@ -45,10 +45,10 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```typescript
-import { StripeError } from "stripe";
+import { StripeError } from "@fern-api/stripe";
 
 try {
-    await client.postCustomersCustomerSourcesId(...);
+    await client.account.create(...);
 } catch (err) {
     if (err instanceof StripeError) {
         console.log(err.statusCode);
@@ -65,7 +65,7 @@ try {
 If you would like to send additional headers as part of the request, use the `headers` request option.
 
 ```typescript
-const response = await client.postCustomersCustomerSourcesId(..., {
+const response = await client.account.create(..., {
     headers: {
         'X-Custom-Header': 'custom value'
     }
@@ -87,7 +87,7 @@ A request is deemed retriable when any of the following HTTP status codes is ret
 Use the `maxRetries` request option to configure this behavior.
 
 ```typescript
-const response = await client.postCustomersCustomerSourcesId(..., {
+const response = await client.account.create(..., {
     maxRetries: 0 // override maxRetries at the request level
 });
 ```
@@ -97,7 +97,7 @@ const response = await client.postCustomersCustomerSourcesId(..., {
 The SDK defaults to a 60 second timeout. Use the `timeoutInSeconds` option to configure this behavior.
 
 ```typescript
-const response = await client.postCustomersCustomerSourcesId(..., {
+const response = await client.account.create(..., {
     timeoutInSeconds: 30 // override timeout to 30s
 });
 ```
@@ -108,7 +108,7 @@ The SDK allows users to abort requests at any point by passing in an abort signa
 
 ```typescript
 const controller = new AbortController();
-const response = await client.postCustomersCustomerSourcesId(..., {
+const response = await client.account.create(..., {
     abortSignal: controller.signal
 });
 controller.abort(); // aborts the request
@@ -132,7 +132,7 @@ The SDK provides a way for your to customize the underlying HTTP client / Fetch 
 unsupported environment, this provides a way for you to break glass and ensure the SDK works.
 
 ```typescript
-import { StripeClient } from "stripe";
+import { StripeClient } from "@fern-api/stripe";
 
 const client = new StripeClient({
     ...

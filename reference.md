@@ -1,6 +1,6 @@
 # Reference
 
-<details><summary><code>client.<a href="/src/Client.ts">deleteTaxIdsId</a>(id, { ...params }) -> Stripe.DeletedTaxId</code></summary>
+<details><summary><code>client.<a href="/src/Client.ts">getChargesChargeRefundsRefund</a>(charge, refund, { ...params }) -> Stripe.Refund</code></summary>
 <dl>
 <dd>
 
@@ -12,7 +12,7 @@
 <dl>
 <dd>
 
-<p>Deletes an existing account or customer <code>tax_id</code> object.</p>
+<p>Retrieves the details of an existing refund.</p>
 </dd>
 </dl>
 </dd>
@@ -27,7 +27,7 @@
 <dd>
 
 ```typescript
-await client.deleteTaxIdsId("id");
+await client.getChargesChargeRefundsRefund("charge", "refund");
 ```
 
 </dd>
@@ -43,7 +43,7 @@ await client.deleteTaxIdsId("id");
 <dl>
 <dd>
 
-**id:** `string`
+**charge:** `string`
 
 </dd>
 </dl>
@@ -51,7 +51,15 @@ await client.deleteTaxIdsId("id");
 <dl>
 <dd>
 
-**request:** `Stripe.DeleteTaxIdsIdRequest`
+**refund:** `string`
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Stripe.GetChargesChargeRefundsRefundRequest`
 
 </dd>
 </dl>
@@ -7633,6 +7641,73 @@ await client.file.list();
 <dd>
 
 **request:** `Stripe.FileListRequest`
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `File_.RequestOptions`
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.file.<a href="/src/api/resources/file/client/Client.ts">create</a>({ ...params }) -> Stripe.File_</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+<p>To upload a file to Stripe, you need to send a request of type <code>multipart/form-data</code>. Include the file you want to upload in the request, and the parameters for creating a file.</p>
+
+<p>All of Stripe’s officially supported Client libraries support sending <code>multipart/form-data</code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.file.create({
+    file: fs.createReadStream("/path/to/your/file"),
+    purpose: "account_requirement",
+});
+```
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Stripe.FileCreateRequest`
 
 </dd>
 </dl>

@@ -7,14 +7,15 @@ import * as core from "../../../../core";
 import * as Stripe from "../../../index";
 import urlJoin from "url-join";
 import * as errors from "../../../../errors/index";
+import * as fs from "fs";
+import { toJson } from "../../../../core/json";
 
 export declare namespace File_ {
     export interface Options {
         environment?: core.Supplier<environments.StripeEnvironment | string>;
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
-        username: core.Supplier<string>;
-        password: core.Supplier<string>;
+        token: core.Supplier<core.BearerToken>;
     }
 
     export interface RequestOptions {
@@ -82,9 +83,9 @@ export class File_ {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -115,6 +116,90 @@ export class File_ {
                 });
             case "timeout":
                 throw new errors.StripeTimeoutError("Timeout exceeded when calling GET /v1/files.");
+            case "unknown":
+                throw new errors.StripeError({
+                    message: _response.error.errorMessage,
+                });
+        }
+    }
+
+    /**
+     * <p>To upload a file to Stripe, you need to send a request of type <code>multipart/form-data</code>. Include the file you want to upload in the request, and the parameters for creating a file.</p>
+     *
+     * <p>All of Stripe’s officially supported Client libraries support sending <code>multipart/form-data</code>.</p>
+     *
+     * @param {Stripe.FileCreateRequest} request
+     * @param {File_.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @example
+     *     await client.file.create({
+     *         file: fs.createReadStream("/path/to/your/file"),
+     *         purpose: "account_requirement"
+     *     })
+     */
+    public async create(
+        request: Stripe.FileCreateRequest,
+        requestOptions?: File_.RequestOptions,
+    ): Promise<Stripe.File_> {
+        const _request = await core.newFormData();
+        if (request.expand != null) {
+            for (const _item of request.expand) {
+                _request.append("expand", _item);
+            }
+        }
+
+        await _request.appendFile("file", request.file);
+        if (request.file_link_data != null) {
+            _request.append("file_link_data", toJson(request.file_link_data));
+        }
+
+        _request.append("purpose", request.purpose);
+        const _maybeEncodedRequest = await _request.getRequest();
+        const _response = await core.fetcher({
+            url: urlJoin(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.StripeEnvironment.Default,
+                "v1/files",
+            ),
+            method: "POST",
+            headers: {
+                Authorization: await this._getAuthorizationHeader(),
+                "X-Fern-Language": "JavaScript",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
+                "X-Fern-Runtime": core.RUNTIME.type,
+                "X-Fern-Runtime-Version": core.RUNTIME.version,
+                ..._maybeEncodedRequest.headers,
+                ...requestOptions?.headers,
+            },
+            requestType: "file",
+            duplex: _maybeEncodedRequest.duplex,
+            body: _maybeEncodedRequest.body,
+            timeoutMs: requestOptions?.timeoutInSeconds != null ? requestOptions.timeoutInSeconds * 1000 : 60000,
+            maxRetries: requestOptions?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+        });
+        if (_response.ok) {
+            return _response.body as Stripe.File_;
+        }
+
+        if (_response.error.reason === "status-code") {
+            throw new errors.StripeError({
+                statusCode: _response.error.statusCode,
+                body: _response.error.body,
+            });
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.StripeError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                });
+            case "timeout":
+                throw new errors.StripeTimeoutError("Timeout exceeded when calling POST /v1/files.");
             case "unknown":
                 throw new errors.StripeError({
                     message: _response.error.errorMessage,
@@ -158,9 +243,9 @@ export class File_ {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -198,10 +283,7 @@ export class File_ {
         }
     }
 
-    protected async _getAuthorizationHeader(): Promise<string | undefined> {
-        return core.BasicAuth.toAuthorizationHeader({
-            username: await core.Supplier.get(this._options.username),
-            password: await core.Supplier.get(this._options.password),
-        });
+    protected async _getAuthorizationHeader(): Promise<string> {
+        return `Bearer ${await core.Supplier.get(this._options.token)}`;
     }
 }

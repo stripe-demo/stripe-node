@@ -13,8 +13,7 @@ export declare namespace FinancialAccount {
         environment?: core.Supplier<environments.StripeEnvironment | string>;
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
-        username: core.Supplier<string>;
-        password: core.Supplier<string>;
+        token: core.Supplier<core.BearerToken>;
     }
 
     export interface RequestOptions {
@@ -78,9 +77,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -146,9 +145,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -224,9 +223,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -292,9 +291,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -360,9 +359,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -438,9 +437,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -506,9 +505,9 @@ export class FinancialAccount {
             headers: {
                 Authorization: await this._getAuthorizationHeader(),
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "stripe",
-                "X-Fern-SDK-Version": "0.0.1-alpha0",
-                "User-Agent": "stripe/0.0.1-alpha0",
+                "X-Fern-SDK-Name": "@fern-api/stripe",
+                "X-Fern-SDK-Version": "1.0.0",
+                "User-Agent": "@fern-api/stripe/1.0.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...requestOptions?.headers,
@@ -548,10 +547,7 @@ export class FinancialAccount {
         }
     }
 
-    protected async _getAuthorizationHeader(): Promise<string | undefined> {
-        return core.BasicAuth.toAuthorizationHeader({
-            username: await core.Supplier.get(this._options.username),
-            password: await core.Supplier.get(this._options.password),
-        });
+    protected async _getAuthorizationHeader(): Promise<string> {
+        return `Bearer ${await core.Supplier.get(this._options.token)}`;
     }
 }
